@@ -1,0 +1,63 @@
+version: '2'
+services:
+  # The application
+  app:
+    build:
+      context: ./
+      dockerfile: app/DockerFile
+    working_dir: /var/www
+    volumes:
+      - ../:/var/www
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+  # Service test, work as a chatter
+  node-server:
+    build: ./node_server
+    links:
+      - redis
+    expose:
+      - "443"
+    environment:
+      - NAME=nodejs
+
+  # Service redis
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+  
+  # The web server
+  web:
+    build:
+      context: ./
+      dockerfile: web/DockerFile
+    working_dir: /var/www
+    volumes_from: 
+      - app
+    ports:
+      - 8082:80
+      
+  # nginx for running node
+  web-node:
+    build: ./web_node
+    links:
+      - node-server
+    ports:
+      - "443:80"
+
+  # The database
+  database:
+    image: mysql:5.7
+    volumes:
+      - carrackdbdata:/var/lib/mysql
+    environment:
+      - "MYSQL_DATABASE=tool_db"
+      - "MYSQL_USER=ngantlt"
+      - "MYSQL_PASSWORD=123456"
+      - "MYSQL_ROOT_PASSWORD=123456"
+    ports:
+      - "33063:3306"
+
+volumes:
+  carrackdbdata:
