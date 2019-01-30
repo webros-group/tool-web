@@ -20,3 +20,7 @@ Route::post('/paypal', 'HomeController@paypal')->name('paypalPost');
 
 
 Auth::routes();
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
