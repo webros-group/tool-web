@@ -10,6 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['prefix' => 'admin'], function () {
+    Auth::routes();
+    Route::get('/', 'Admin\HomeController@index')->name('index');
+});
 
 Route::get('/', 'HomeController@index')->name('index');
 Route::post('/', 'HomeController@index')->name('indexPost');
@@ -19,8 +23,5 @@ Route::get('/paypal', 'HomeController@paypal')->name('paypal');
 Route::post('/paypal', 'HomeController@paypal')->name('paypalPost');
 
 
-Auth::routes();
-
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
